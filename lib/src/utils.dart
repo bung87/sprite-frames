@@ -24,10 +24,11 @@ class Size extends ui.Size {
   }
 }
 
-class Rect extends math.Rectangle {
-  const Rect(left, top, width, height) : super(left, top, width, height);
+class Rect extends ui.Rect {
+  const Rect(left, top, width, height) : super.fromLTWH(left, top, width, height);
   static Rect fromString(String s) {
     var l = convertPlistArray(s);
     return Rect(l[0], l[1], l[2], l[3]);
   }
+  
 }

@@ -6,46 +6,14 @@ import 'package:flame/flame.dart';
 import 'package:flame/palette.dart';
 import 'package:path/path.dart' as p;
 import './utils.dart';
-import 'package:pvr_ccz/pvr_ccz.dart';
 import 'package:image/image.dart' hide Point;
+import './sprite_frame.dart';
 
-class SpriteFrame {
-  Rect _rect;
-  Rect _rectInPixels;
-  bool _rotated;
-  Point _offset;
-  Point _offsetInPixels;
-  Size _originalSize;
-  Size _originalSizeInPixels;
-  Image _texture;
-  String _textureFilename;
-  static SpriteFrame fromTextureFilename(String filename,
-      {Rect rectInPixels, bool rotated, Point offset, Size originalSize}) {
-    var spriteFrame = SpriteFrame();
-    spriteFrame
-      .._textureFilename = filename
-      .._rectInPixels = rectInPixels
-      .._offset = offset
-      // ..rect = CC_RECT_PIXELS_TO_POINTS rectInPixels
-      .._offsetInPixels = offset
-      // ..offset =  CC_POINT_PIXELS_TO_POINTS offset
-      .._originalSizeInPixels = originalSize
-      .._texture = decodePvrCcz(filename);
-    // .._originalSize = CC_SIZE_PIXELS_TO_POINTS _originalSizeInPixels
-    return spriteFrame;
-  }
-
-  static SpriteFrame fromTexture(Image texture,{Rect rectInPixels, bool rotated, Point offset, Size originalSize}) {
-
-  }
-}
-
+/// cache layer container
 class SpriteFrames {
-  bool get isAwesome => true;
   String filename;
-  Map<String, SpriteFrame> _spriteFrames = {};
+  final Map<String, SpriteFrame> _spriteFrames = {};
   Paint paint = BasicPalette.white.paint;
-  Image image;
   Rect src;
   Set<String> _loadedFilenames;
   SpriteFrames(this.filename) {
@@ -104,7 +72,7 @@ class SpriteFrames {
             var size = Size.fromString(frameData['sourceSize']);
 
             // set frame info
-            rectInPixels = frame;
+            rectInPixels = frameData;
             isRotated = rotated;
             frameOffset = offset;
             originalSize = size;
@@ -134,5 +102,4 @@ class SpriteFrames {
       _spriteFrames[k] = spriteFrame;
     });
   }
-
 }
