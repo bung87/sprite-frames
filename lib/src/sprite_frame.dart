@@ -2,39 +2,43 @@ import 'dart:ui' as ui;
 import 'package:flame/components/component.dart';
 import 'package:pvr_ccz/pvr_ccz.dart';
 import 'package:image/image.dart' as libimage;
-import './utils.dart';
+import './utils.dart' as utils;
 import 'package:flutter/material.dart' show Colors;
 import 'dart:io';
+import 'package:flutter/widgets.dart' show WidgetsBinding;
 
-class SpriteFrame implements Component {
+final devicePixelRatio = WidgetsBinding.instance.window.devicePixelRatio;
+
+class SpriteFrame extends Component {
+ 
   static ui.Paint paint = ui.Paint()..color = Colors.white;
   bool _loaded = false;
   dynamic _texture; // image.Image or ui.Image
   String _textureFilename;
 
   /// CCSprite properties
-  // Rect _rect;
-  Rect _rectInPixels;
+  utils.Rect _rect;
+  utils.Rect _rectInPixels;
   // whether or not the rect of the frame is rotated ( x = x+width, y = y+height, width = height, height = width )
   bool _rotated;
-  // Point _offset;
-  Point _offsetInPixels;
-  // Size _originalSize;
-  Size _originalSizeInPixels;
+  utils.Point _offset;
+  utils.Point _offsetInPixels;
+  utils.Size _originalSize;
+  utils.Size _originalSizeInPixels;
 
   SpriteFrame.fromTextureFilename(String filename,
-      {Rect rectInPixels, bool rotated, Point offset, Size originalSize}) {
+      {utils.Rect rectInPixels, bool rotated, utils.Point offset, utils.Size originalSize}) {
+
     this
       .._textureFilename = filename
       .._rectInPixels = rectInPixels
-      // .._offset = offset CC_POINT_PIXELS_TO_POINTS( offsetInPixels_ );
-      // ..rect = CC_RECT_PIXELS_TO_POINTS rectInPixels div device ratio
+      .._rect = rectInPixels / devicePixelRatio  //rectInPixels div device ratio
       .._offsetInPixels = offset
-      // ..offset =  CC_POINT_PIXELS_TO_POINTS offset
+      .._offset =   offset / devicePixelRatio 
       .._originalSizeInPixels = originalSize
-      .._rotated = rotated;
-    // .._originalSize = CC_SIZE_PIXELS_TO_POINTS _originalSizeInPixels
-
+      .._rotated = rotated
+      .._originalSize = originalSize /  devicePixelRatio;
+    
     ui.decodeImageFromList(toPngBytesSync(filename), (image) {
       _texture = image;
       _loaded = true;
@@ -42,24 +46,19 @@ class SpriteFrame implements Component {
   }
 
   SpriteFrame.fromTexture(dynamic texture,
-      {Rect rectInPixels, bool rotated, Point offset, Size originalSize})
-      : assert(rectInPixels != null &&
-            rotated != null &&
-            offset != null &&
-            originalSize != null) {
+      {utils.Rect rectInPixels, bool rotated, utils.Point offset, utils.Size originalSize}) {
+
     this
-      // .._textureFilename = filename
       .._rectInPixels = rectInPixels
-      // .._offset = offset CC_POINT_PIXELS_TO_POINTS( offsetInPixels_ );
-      // ..rect = CC_RECT_PIXELS_TO_POINTS rectInPixels div device ratio
+      .._rect = rectInPixels / devicePixelRatio  //rectInPixels div device ratio
       .._offsetInPixels = offset
-      // ..offset =  CC_POINT_PIXELS_TO_POINTS offset
+      .._offset =   offset / devicePixelRatio 
       .._originalSizeInPixels = originalSize
-      .._texture = texture
-      .._rotated = rotated;
-    // .._originalSize = CC_SIZE_PIXELS_TO_POINTS _originalSizeInPixels
-    if (_texture is libimage.Image) {
-      ui.decodeImageFromList(imageAsPngUintList(_texture), (image) {
+      .._rotated = rotated
+      .._originalSize = originalSize / devicePixelRatio;
+       print(this._rect);
+    if (texture is libimage.Image) {
+      ui.decodeImageFromList(imageAsPngUintList(texture), (image) {
         _texture = image;
         _loaded = true;
       });
@@ -74,13 +73,18 @@ class SpriteFrame implements Component {
     if (!loaded()) {
       return;
     }
-    var dst = Rect(
-        _rectInPixels.left + _offsetInPixels.x,
-        _rectInPixels.top + _offsetInPixels.y,
-        _rectInPixels.width,
-        _rectInPixels.height);
-
-    c.drawImageRect(_texture, _rectInPixels, dst, paint);
+    var dst = ui.Rect.fromLTWH(
+        _rect.left + _offset.x ,
+        _rect.top + _offset.y,
+        _rect.width ,
+        _rect.height );
+   
+    var src = ui.Rect.fromLTWH(
+        _rectInPixels.left ,
+        _rectInPixels.top ,
+        _rectInPixels.width ,
+        _rectInPixels.height );
+    c.drawImageRect(_texture, src, dst, paint);
   }
 
   @override
@@ -89,6 +93,7 @@ class SpriteFrame implements Component {
   void resize(ui.Size size) {
     
   }
+  
   @override
   bool destroy() => false;
 

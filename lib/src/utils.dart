@@ -14,21 +14,34 @@ class Point extends math.Point {
     var l = convertPlistArray(s);
     return Point(l[0], l[1]);
   }
+
+  Point operator /(double ratio) {
+    return Point(x / ratio, y / ratio);
+  }
 }
 
-class Size extends ui.Size {
-  const Size(num width, num height):super(width,height);
+class Size  {
+  double width,height;
+  // const Size(num width, num height) : super(width, height);
+  Size(this.width,this.height);
   static Size fromString(String s) {
     var l = convertPlistArray(s);
     return Size(l[0] + .0, l[1] + .0);
   }
+  Size operator /(double ratio) {
+    return Size(width / ratio, height / ratio);
+  }
 }
 
 class Rect extends ui.Rect {
-  const Rect(left, top, width, height) : super.fromLTWH(left, top, width, height);
+  const Rect(left, top, width, height)
+      : super.fromLTWH(left, top, width, height);
   static Rect fromString(String s) {
     var l = convertPlistArray(s);
     return Rect(l[0][0] + .0, l[0][1] + .0, l[1][0] + .0, l[1][1] + .0);
   }
-  
+
+  Rect operator /(double ratio) {
+    return Rect(left / ratio, top / ratio, right / ratio, bottom / ratio);
+  }
 }

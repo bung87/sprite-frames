@@ -1,10 +1,9 @@
-// import 'dart:ui';
+
 import './plist.dart';
 import 'package:flame/flame.dart';
-// import 'package:flame/palette.dart';
 import 'package:pvr_ccz/pvr_ccz.dart';
 import 'package:path/path.dart' as p;
-import './utils.dart';
+import './utils.dart' as utils;
 import 'package:image/image.dart' hide Point;
 import './sprite_frame.dart';
 
@@ -13,8 +12,7 @@ final SpriteFrames spriteFrameCache = SpriteFrames._private();
 /// cache layer container
 class SpriteFrames {
   final Map<String, SpriteFrame> _spriteFrames = {};
-  // Paint paint = BasicPalette.white.paint;
-  Rect src;
+  utils.Rect src;
 
   /// plist files Set
   final Set<String> _loadedFilenames = {};
@@ -26,7 +24,7 @@ class SpriteFrames {
   }
 
   /// add SpriteFrames with plist file
-  addSpriteFramesWithFile(String filename) async {
+  Future<void> addSpriteFramesWithFile(String filename) async {
     var plist = await Flame.bundle.loadString('assets/' + filename);
     var data = parse(plist);
     var texturePath;
@@ -57,10 +55,10 @@ class SpriteFrames {
     }
 
     // SpriteFrame info
-    Rect rectInPixels;
+    utils.Rect rectInPixels;
     bool isRotated;
-    Point frameOffset;
-    Size originalSize;
+    utils.Point frameOffset;
+    utils.Size originalSize;
 
     frames.forEach((k, frame) {
       var spriteFrame;
@@ -79,11 +77,11 @@ class SpriteFrames {
             if (format == 2) {
               rotated = frame['rotated'];
             }
-            var offset = Point.fromString(frame['offset']);
-            var size = Size.fromString(frame['sourceSize']);
+            var offset = utils.Point.fromString(frame['offset']);
+            var size = utils.Size.fromString(frame['sourceSize']);
 
             // set frame info
-            rectInPixels = Rect.fromString(frameRect);
+            rectInPixels = utils.Rect.fromString(frameRect);
             isRotated = rotated;
             frameOffset = offset;
             originalSize = size;
