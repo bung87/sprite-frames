@@ -10,6 +10,8 @@ void main() {
     });
 
     test('First Test', () {
+      // var frames = SpriteFrames('SmlMap0.plist');
+      // frames["SmlMap0.png"]
       // expect(awesome.isAwesome, isTrue);
     });
   });

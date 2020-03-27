@@ -1,44 +1,55 @@
-import 'package:flame/sprite.dart';
-import 'dart:ui';
+// import 'dart:ui';
 import './plist.dart';
-import 'dart:async';
 import 'package:flame/flame.dart';
-import 'package:flame/palette.dart';
+// import 'package:flame/palette.dart';
+import 'package:pvr_ccz/pvr_ccz.dart';
 import 'package:path/path.dart' as p;
 import './utils.dart';
 import 'package:image/image.dart' hide Point;
 import './sprite_frame.dart';
 
+final SpriteFrames spriteFrameCache = SpriteFrames._private();
+
 /// cache layer container
 class SpriteFrames {
-  String filename;
   final Map<String, SpriteFrame> _spriteFrames = {};
-  Paint paint = BasicPalette.white.paint;
+  // Paint paint = BasicPalette.white.paint;
   Rect src;
-  Set<String> _loadedFilenames;
-  SpriteFrames(this.filename) {
-    _load();
+
+  /// plist files Set
+  final Set<String> _loadedFilenames = {};
+  SpriteFrames._private() {}
+
+  /// always get the singleton instance.
+  factory SpriteFrames() {
+    return spriteFrameCache;
   }
 
-  _load() async {
+  /// add SpriteFrames with plist file
+  addSpriteFramesWithFile(String filename) async {
     var plist = await Flame.bundle.loadString('assets/' + filename);
     var data = parse(plist);
     var texturePath;
-    var metaData = data ?? ['metadata'];
-    if (metaData) {
+    var metaData = (data as Map)['metadata'];
+    if (metaData != null) {
       texturePath = (metaData as Map)['textureFileName'];
     }
-    if (texturePath) {
-      texturePath = p.dirname(filename);
+    if (texturePath != null) {
+      texturePath = p.join(p.dirname(filename), texturePath);
     } else {
-      texturePath = p.withoutExtension(filename) + 'png';
+      /// assuming image store same dir as plist
+      texturePath = p.withoutExtension(filename) + '.png';
     }
-    _addSpriteFrames(data, textureFilename: texturePath);
+    var byteData = await Flame.bundle.load(p.join('assets', texturePath));
+    var img = decodePvrCczWithByteData(byteData);
+    _addSpriteFrames(data, textureReference: img);
+    _loadedFilenames.add(filename);
   }
 
+  /// data param storing frame info in plist
   void _addSpriteFrames(data,
       {String textureFilename, Image textureReference}) {
-    var metaData = data ?? ['metadata'];
+    var metaData = (data as Map)['metadata'];
     var frames = data['frames'];
     int format;
     if (metaData != null) {
@@ -53,6 +64,8 @@ class SpriteFrames {
 
     frames.forEach((k, frame) {
       var spriteFrame;
+      print("format");
+      print(format);
       switch (format) {
         case 0:
           {
@@ -63,16 +76,16 @@ class SpriteFrames {
         case 1:
         case 2:
           {
-            var frameData = frame['frame'];
+            var frameRect = frame['frame'];
             var rotated = false;
             if (format == 2) {
-              rotated = frameData['rotated'];
+              rotated = frame['rotated'];
             }
-            var offset = Point.fromString(frameData['offset']);
-            var size = Size.fromString(frameData['sourceSize']);
+            var offset = Point.fromString(frame['offset']);
+            var size = Size.fromString(frame['sourceSize']);
 
             // set frame info
-            rectInPixels = frameData;
+            rectInPixels = Rect.fromString(frameRect);
             isRotated = rotated;
             frameOffset = offset;
             originalSize = size;
@@ -101,5 +114,26 @@ class SpriteFrames {
       }
       _spriteFrames[k] = spriteFrame;
     });
+  }
+
+  SpriteFrame spriteFrameByName(String name) {
+    var frame;
+    if (_spriteFrames.containsKey(name)) {
+      frame = _spriteFrames[name];
+    } else {
+      // try alias dictionary working when frame format == 3 that has aliases field.
+    }
+    return frame;
+  }
+
+  void removeSpriteFrames() {
+    _spriteFrames.clear();
+    // _spriteFramesAliases
+    _loadedFilenames.clear();
+  }
+
+  @override
+  String toString() {
+    return _spriteFrames.toString();
   }
 }

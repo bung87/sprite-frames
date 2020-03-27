@@ -1,6 +1,6 @@
 name: sprite_frames
 description: A starting point for Dart libraries or applications.
-# version: 1.0.0
+version: 0.0.4
 # homepage: https://www.example.com
 
 environment:
@@ -10,11 +10,13 @@ dependencies:
   flutter:
     sdk: flutter 
   flame: 
+    path: ../../flutter_works/flame
   crypto:
   pvr_ccz:
-    version: ^0.0.2 
-    git:
-      url: git://github.com/bung87/pvr-ccz.git
+    version: ^0.0.3
+    path: ../pvr-ccz
+    # git:
+    #   url: git://github.com/bung87/pvr-ccz.git
 
 dev_dependencies:
   pedantic: ^1.8.0
