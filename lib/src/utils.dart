@@ -17,10 +17,10 @@ class Point extends math.Point {
 }
 
 class Size extends ui.Size {
-  const Size(double width, double height) : super(width, height);
+  const Size(num width, num height):super(width,height);
   static Size fromString(String s) {
     var l = convertPlistArray(s);
-    return Size(l[0], l[1]);
+    return Size(l[0] + .0, l[1] + .0);
   }
 }
 
@@ -28,7 +28,7 @@ class Rect extends ui.Rect {
   const Rect(left, top, width, height) : super.fromLTWH(left, top, width, height);
   static Rect fromString(String s) {
     var l = convertPlistArray(s);
-    return Rect(l[0], l[1], l[2], l[3]);
+    return Rect(l[0][0] + .0, l[0][1] + .0, l[1][0] + .0, l[1][1] + .0);
   }
   
 }
