@@ -32,10 +32,13 @@ class SpriteFrame implements Component {
       .._offsetInPixels = offset
       // ..offset =  CC_POINT_PIXELS_TO_POINTS offset
       .._originalSizeInPixels = originalSize
-      .._texture = decodePvrCcz(filename)
       .._rotated = rotated;
     // .._originalSize = CC_SIZE_PIXELS_TO_POINTS _originalSizeInPixels
-    _loaded = true;
+
+    ui.decodeImageFromList(toPngBytesSync(filename), (image) {
+      _texture = image;
+      _loaded = true;
+    });
   }
 
   SpriteFrame.fromTexture(dynamic texture,
@@ -55,22 +58,12 @@ class SpriteFrame implements Component {
       .._texture = texture
       .._rotated = rotated;
     // .._originalSize = CC_SIZE_PIXELS_TO_POINTS _originalSizeInPixels
-    //  _texture = new Image.memory((_texture as libimage.Image).getBytes());
-
-    // ui.decodeImageFromList((_texture as libimage.Image).getBytes(), (image) {
-
-    //     _texture = image;
-    //     _loaded = true;
-    //   });
-
-    var img = (_texture as libimage.Image);
-    var bb = BytesBuilder();
-    bb.add(libimage.encodePng(img));
-
-    ui.decodeImageFromList(bb.takeBytes(), (image) {
-      _texture = image;
-      _loaded = true;
-    });
+    if (_texture is libimage.Image) {
+      ui.decodeImageFromList(imageAsPngUintList(_texture), (image) {
+        _texture = image;
+        _loaded = true;
+      });
+    }
   }
 
   @override
@@ -78,41 +71,26 @@ class SpriteFrame implements Component {
 
   @override
   void render(ui.Canvas c) {
+    if (!loaded()) {
+      return;
+    }
     var dst = Rect(
         _rectInPixels.left + _offsetInPixels.x,
         _rectInPixels.top + _offsetInPixels.y,
         _rectInPixels.width,
         _rectInPixels.height);
-    if (_texture is ui.Image) {
-      c.drawImageRect(_texture, _rectInPixels, dst, paint);
-    } 
-    // else if (_texture is libimage.Image) {
-    //   var img = (_texture as libimage.Image);
-    //   var bb = BytesBuilder(copy: true);
-    //   bb.add(libimage.encodePng(img));
-    //   // ui.instantiateImageCodec(bb.takeBytes(),targetWidth:img.width,targetHeight:img.height).then((codec)  {
-    //   //   codec.getNextFrame().then((frame) {
-    //   //     c.drawImageRect(frame.image, _rectInPixels, dst, paint);
 
-    //   //   });
-    //   // });
-    //   ui.decodeImageFromList(bb.takeBytes(), (image) {
-    //     c.drawImageRect(image, _rectInPixels, dst, paint);
-    //   });
-    //   // libimage.encodePng(libimage.decodeImage(img.getBytes()))
-    //   // var format = (_texture as libimage.Image).channels == libimage.Channels.rgba ? libimage.Format.rgba : ui.Format.rgb;
-    //   // ui.decodeImageFromList(img.getBytes(), (image) {
-    //   //   c.drawImageRect(image, _rectInPixels, dst, paint);
-    //   // });
-    // }
+    c.drawImageRect(_texture, _rectInPixels, dst, paint);
   }
 
   @override
   void update(double t) {}
   @override
-  void resize(ui.Size size) {}
+  void resize(ui.Size size) {
+    
+  }
   @override
-   bool destroy() => false;
+  bool destroy() => false;
 
   noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

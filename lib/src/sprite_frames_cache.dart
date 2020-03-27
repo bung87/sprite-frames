@@ -64,8 +64,6 @@ class SpriteFrames {
 
     frames.forEach((k, frame) {
       var spriteFrame;
-      print("format");
-      print(format);
       switch (format) {
         case 0:
           {
