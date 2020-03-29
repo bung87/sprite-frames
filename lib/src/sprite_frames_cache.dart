@@ -1,5 +1,5 @@
 
-import 'package:plist/plist.dart';
+import 'package:plist/plist.dart' as plist;
 import 'package:flame/flame.dart';
 import 'package:pvr_ccz/pvr_ccz.dart';
 import 'package:path/path.dart' as p;
@@ -25,8 +25,8 @@ class SpriteFrames {
 
   /// add SpriteFrames with plist file
   Future<void> addSpriteFramesWithFile(String filename) async {
-    var plist = await Flame.bundle.loadString('assets/' + filename);
-    var data = parse(plist);
+    var _plist = await Flame.bundle.loadString('assets/' + filename);
+    var data = plist.parse(_plist);
     var texturePath;
     var metaData = (data as Map)['metadata'];
     if (metaData != null) {
