@@ -4,7 +4,6 @@ import 'package:pvr_ccz/pvr_ccz.dart';
 import 'package:image/image.dart' as libimage;
 import './utils.dart' as utils;
 import 'package:flutter/material.dart' show Colors;
-import 'dart:io';
 import 'package:flutter/widgets.dart' show WidgetsBinding;
 
 final devicePixelRatio = WidgetsBinding.instance.window.devicePixelRatio;
@@ -25,7 +24,13 @@ class SpriteFrame extends Component {
   utils.Point _offsetInPixels;
   utils.Size _originalSize;
   utils.Size _originalSizeInPixels;
-
+  ui.Rect toRect(){
+     return ui.Rect.fromLTWH(
+        _rect.left + _offset.x ,
+        _rect.top + _offset.y,
+        _rect.width ,
+        _rect.height );
+  }
   SpriteFrame.fromTextureFilename(String filename,
       {utils.Rect rectInPixels, bool rotated, utils.Point offset, utils.Size originalSize}) {
 
@@ -56,7 +61,7 @@ class SpriteFrame extends Component {
       .._originalSizeInPixels = originalSize
       .._rotated = rotated
       .._originalSize = originalSize / devicePixelRatio;
-       print(this._rect);
+
     if (texture is libimage.Image) {
       ui.decodeImageFromList(imageAsPngUintList(texture), (image) {
         _texture = image;

@@ -1,12 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
-import 'dart:convert';
-
-List convertPlistArray(String s) {
-  var b = s.replaceAll('{', '[').replaceAll('}', ']');
-  var l = jsonDecode(b) as List;
-  return l;
-}
+import './convert_plist_array.dart';
 
 class Point extends math.Point {
   const Point(x, y) : super(x, y);
@@ -20,14 +14,15 @@ class Point extends math.Point {
   }
 }
 
-class Size  {
-  double width,height;
+class Size {
+  double width, height;
   // const Size(num width, num height) : super(width, height);
-  Size(this.width,this.height);
+  Size(this.width, this.height);
   static Size fromString(String s) {
     var l = convertPlistArray(s);
     return Size(l[0] + .0, l[1] + .0);
   }
+
   Size operator /(double ratio) {
     return Size(width / ratio, height / ratio);
   }
@@ -45,3 +40,4 @@ class Rect extends ui.Rect {
     return Rect(left / ratio, top / ratio, right / ratio, bottom / ratio);
   }
 }
+

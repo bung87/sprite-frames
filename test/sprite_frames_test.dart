@@ -1,6 +1,5 @@
-import 'package:sprite_frames/sprite_frames.dart';
+import '../lib/src/convert_plist_array.dart';
 import 'package:test/test.dart';
-
 void main() {
   group('A group of tests', () {
     // Awesome awesome;
@@ -9,10 +8,10 @@ void main() {
       // awesome = Awesome();
     });
 
-    test('First Test', () {
-      // var frames = SpriteFrames('SmlMap0.plist');
-      // frames["SmlMap0.png"]
-      // expect(awesome.isAwesome, isTrue);
+    test('Test convertPlistArray', () {
+       print(convertPlistArray('{{2,2},{240,240}}'));
+      
+      expect(convertPlistArray('{{2,2},{240,240}}'),equals([[2, 2], [240, 240]]));
     });
   });
 }
