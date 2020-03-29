@@ -1,6 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
-import './convert_plist_array.dart';
+import 'package:plist/plist.dart';
 
 class Point extends math.Point {
   const Point(x, y) : super(x, y);

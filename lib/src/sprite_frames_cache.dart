@@ -1,5 +1,5 @@
 
-import './plist.dart';
+import 'package:plist/plist.dart';
 import 'package:flame/flame.dart';
 import 'package:pvr_ccz/pvr_ccz.dart';
 import 'package:path/path.dart' as p;
