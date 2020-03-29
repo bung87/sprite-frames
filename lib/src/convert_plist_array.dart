@@ -1,4 +1,4 @@
-import 'dart:convert';
+// import 'dart:convert';
 import 'dart:collection';
 
 enum _TokenType { BraceOpen, BraceClose, Content, Comma }
@@ -65,7 +65,7 @@ Iterable<_Token> _scan(String s) sync* {
 dynamic convertPlistArray(String s) {
   // var b = s.replaceAll('{', '[').replaceAll('}', ']');
   // var l = jsonDecode(b) as List;
-  var prevNodes = new Queue();
+  var prevNodes = Queue();
   var currNode = [];
 
   for (var token in _scan(s)) {
