@@ -10,17 +10,14 @@ dependencies:
   flutter:
     sdk: flutter 
   flame: 
-    path: ../../flutter_works/flame
   crypto:
   plist:
-    path: ../plist
-    # git:
-    #   url: git@github.com:bung87/plist.git
+    git:
+      url: git@github.com:bung87/plist.git
   pvr_ccz:
     version: ^0.0.3
-    path: ../pvr-ccz
-    # git:
-    #   url: git://github.com/bung87/pvr-ccz.git
+    git:
+      url: git://github.com/bung87/pvr-ccz.git
 
 dev_dependencies:
   pedantic: ^1.8.0
